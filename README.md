@@ -263,6 +263,8 @@ Go to physionet.org. Create an account. Complete their training module (it takes
 The dataset is published and described here:
 Johnson, A. E. W., et al. (2023). MIMIC-IV, a publicly available large intensive care unit database. Scientific Data 10, 1.
 
+UB Box link for the Dataset - https://buffalo.app.box.com/folder/376612710501?s=r13g7syamcjolphph257jdxl897c0lap
+You can find the data in folder named : CDA650<<Filtered_dataset<<Final_Dataset<<hfref_final_Dataset
 ---
 
 ## What We Actually Did
