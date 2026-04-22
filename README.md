@@ -254,34 +254,6 @@ https://github.com/TeamPixelMinds/TIDE-HF
 
 ---
 
-## Common Questions
-
-**Can I use this right now to treat patients?**
-
-No. This is a school project. Real medical software needs to go through testing and approval. Lots of it. Years of testing. Before anything is used on actual patients.
-
-**What about privacy?**
-
-The data we used came from a public database. Everything is anonymous — no names, no addresses. When we built the system we were careful about how we handled it. If you are going to work with real patient information you need to follow HIPAA rules and other privacy laws.
-
-**Can I change the rules?**
-
-You can absolutely change the code. But the numbers we use (like blood pressure 100 or potassium 5.5) come from published research. If you change them you should have research backing that up.
-
-**What if you do not have all the information?**
-
-That is a real problem. We assume certain conditions and have certain comorbidity flags. But if someone has something unusual, the system might not handle it well. Real clinical use would need more sophisticated logic.
-
-**How do you know it is right?**
-
-We tested it on thousands of patients from the hospital database. The recommendations made sense — matched what a cardiologist would actually do. But that is testing on hospital ICU data. Real world post-discharge patients are different. That is why more validation is needed.
-
-**What is wrong with it?**
-
-Several things. We use breathing rate as a stand-in for fluid in the lungs. Not perfect. The ideal would be a wearable that measures it directly. We only have two years of data on some newer drugs. We built this on ICU patients but it is meant for home use. We check patient status at one moment but ideally you would look at trends over time.
-
----
-
 ## Data Access
 
 To use MIMIC-IV you need to:
@@ -295,7 +267,7 @@ Johnson, A. E. W., et al. (2023). MIMIC-IV, a publicly available large intensive
 
 ## What We Actually Did
 
-This was a 12-week school project. One class. Three of us. We had a client — Dr. Ionita who runs a healthcare company. He gave us the problem to solve and checked in with us every week to see how it was going.
+This was a 12-week masters course project. One class. Three of us. We had a client — Dr. Ionita who runs a healthcare company. He gave us the problem to solve and checked in with us every week to see how it was going.
 
 First two weeks we learned what heart failure even is. Third and fourth week we explored the hospital database and the research. Fifth and sixth week we wrote the code to pull and clean the data. Seventh and eighth week we built the decision system. Ninth and tenth week we made presentations and wrote documentation. Last two weeks we cleaned everything up.
 
