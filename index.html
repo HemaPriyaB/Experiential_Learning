@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HFrEF AI Agent — PIXEL MINDS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --navy:    #0a1628;
+  --navy2:   #0f1f3d;
+  --blue:    #2563eb;
+  --blue2:   #1d4ed8;
+  --teal:    #0d9488;
+  --teal2:   #0f766e;
+  --red:     #dc2626;
+  --amber:   #d97706;
+  --purple:  #7c3aed;
+  --green:   #059669;
+  --gray:    #6b7280;
+  --lgray:   #f1f5f9;
+  --white:   #ffffff;
+  --text:    #e2e8f0;
+  --muted:   #94a3b8;
+  --border:  rgba(255,255,255,0.08);
+  --glow:    rgba(13,148,136,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── NAV ───────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,22,40,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem; color: var(--teal); letter-spacing: 0.08em;
+}
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.88rem; font-weight: 500; letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-badge {
+  background: var(--teal); color: white;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  padding: 4px 12px; border-radius: 20px;
+}
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+.nav-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; text-decoration: none; border: none;
+  transition: all 0.2s; white-space: nowrap;
+}
+.nav-btn-ghost {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); color: var(--muted);
+}
+.nav-btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--white); border-color: rgba(255,255,255,0.2); }
+.nav-btn-primary { background: var(--teal); color: white; }
+.nav-btn-primary:hover { background: var(--teal2); transform: translateY(-1px); }
+
+/* ── HERO ──────────────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 100px 2rem 4rem;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(13,148,136,0.12) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 20% 80%, rgba(37,99,235,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 30% at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+.hero-tag {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(13,148,136,0.12);
+  border: 1px solid rgba(13,148,136,0.3);
+  color: var(--teal); font-size: 0.78rem;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.1em;
+  padding: 6px 18px; border-radius: 20px;
+  margin-bottom: 2rem;
+}
+.hero-tag::before { content: '●'; font-size: 0.5rem; animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero h1 {
+  position: relative; z-index: 1;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 1.08; letter-spacing: -0.02em;
+  color: var(--white); margin-bottom: 1.5rem;
+}
+.hero h1 em { color: var(--teal); font-style: italic; }
+
+.hero-sub {
+  position: relative; z-index: 1;
+  font-size: 1.15rem; color: var(--muted); max-width: 680px;
+  margin: 0 auto 3rem; line-height: 1.7;
+}
+
+.hero-stats {
+  position: relative; z-index: 1;
+  display: flex; gap: 3rem; margin-bottom: 3rem; flex-wrap: wrap;
+  justify-content: center;
+}
+.hero-stat { text-align: center; }
+.hero-stat .val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.8rem; color: var(--teal); line-height: 1;
+}
+.hero-stat .lbl { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.05em; margin-top: 4px; }
+
+.hero-divider { width: 1px; height: 60px; background: var(--border); }
+
+.hero-cta {
+  position: relative; z-index: 1;
+  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+}
+.btn-primary {
+  background: var(--teal); color: white;
+  padding: 14px 32px; border-radius: 8px;
+  font-weight: 600; font-size: 0.95rem; text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover { background: var(--teal2); transform: translateY(-1px); }
+.btn-outline {
+  border: 1px solid var(--border); color: var(--muted);
+  padding: 14px 32px; border-radius: 8px;
+  font-weight: 500; font-size: 0.95rem; text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── SECTIONS ──────────────────────────────────────────────────── */
+section { padding: 100px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+.section-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem; color: var(--teal);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 0.75rem; display: block;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--white); line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.section-sub {
+  color: var(--muted); font-size: 1.05rem;
+  max-width: 600px; line-height: 1.7;
+}
+
+/* ── PROBLEM SECTION ───────────────────────────────────────────── */
+#problem { background: var(--navy2); }
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: center; margin-top: 4rem;
+}
+.problem-visual {
+  background: rgba(220,38,38,0.05);
+  border: 1px solid rgba(220,38,38,0.2);
+  border-radius: 16px; padding: 2.5rem;
+}
+.problem-visual h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: white; margin-bottom: 1.5rem;
+}
+.problem-stat {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 0; border-bottom: 1px solid var(--border);
+}
+.problem-stat:last-child { border-bottom: none; }
+.problem-stat .num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; color: var(--red); min-width: 80px;
+}
+.problem-stat .desc { color: var(--muted); font-size: 0.95rem; }
+.problem-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.problem-item {
+  display: flex; gap: 1.5rem; align-items: flex-start;
+}
+.problem-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.problem-item h4 { color: var(--white); font-size: 1rem; margin-bottom: 0.3rem; }
+.problem-item p  { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+/* ── SENSORS ───────────────────────────────────────────────────── */
+#sensors { background: var(--navy); }
+.sensors-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem; margin-top: 4rem;
+}
+.sensor-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem 1.5rem;
+  text-align: center; transition: border-color 0.3s, transform 0.3s;
+  position: relative; overflow: hidden;
+}
+.sensor-card:hover { border-color: var(--teal); transform: translateY(-4px); }
+.sensor-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.sensor-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+.sensor-name { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
+.sensor-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1rem; }
+.sensor-drives {
+  font-family: 'DM Mono', monospace; font-size: 0.72rem;
+  padding: 4px 10px; border-radius: 20px; display: inline-block;
+}
+
+/* ── PAPERS ────────────────────────────────────────────────────── */
+#papers { background: var(--navy2); }
+.papers-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-top: 4rem;
+}
+.paper-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.8rem;
+  transition: border-color 0.2s;
+  display: flex; gap: 1.5rem; align-items: flex-start;
+}
+.paper-card:hover { border-color: rgba(37,99,235,0.4); }
+.paper-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.8rem; font-weight: 500;
+  color: var(--blue); min-width: 44px; line-height: 1;
+}
+.paper-title { color: var(--white); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; }
+.paper-source { color: var(--teal); font-size: 0.78rem; font-family: 'DM Mono', monospace; margin-bottom: 0.5rem; }
+.paper-insight { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+/* ── LOGIC ─────────────────────────────────────────────────────── */
+#logic { background: var(--navy); }
+.logic-steps { margin-top: 4rem; display: flex; flex-direction: column; gap: 0; }
+.logic-step {
+  display: grid; grid-template-columns: 80px 1fr;
+  gap: 0; position: relative;
+}
+.logic-step:not(:last-child) .step-line {
+  position: absolute; left: 39px; top: 60px; bottom: -20px;
+  width: 2px; background: var(--border);
+}
+.step-num-col { display: flex; flex-direction: column; align-items: center; padding-top: 1.5rem; }
+.step-circle {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-weight: 700; font-size: 1rem;
+  color: white; z-index: 1; flex-shrink: 0;
+}
+.step-body {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.8rem 2rem;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.step-body:hover { border-color: rgba(255,255,255,0.15); }
+.step-title { color: var(--white); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.step-rule  { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+.step-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.step-pill  {
+  font-size: 0.78rem; padding: 4px 12px;
+  border-radius: 20px; border: 1px solid;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── DATA ──────────────────────────────────────────────────────── */
+#data { background: var(--navy2); }
+.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 4rem; }
+.data-funnel { display: flex; flex-direction: column; gap: 0.5rem; }
+.funnel-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.5rem; border-radius: 8px;
+  border-left: 4px solid;
+}
+.funnel-step .fn { color: var(--white); font-weight: 600; font-size: 0.9rem; }
+.funnel-step .fv {
+  margin-left: auto; font-family: 'DM Mono', monospace;
+  font-size: 0.85rem; font-weight: 600;
+}
+.data-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.data-stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; text-align: center;
+}
+.data-stat-card .v {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; margin-bottom: 0.3rem;
+}
+.data-stat-card .l { color: var(--muted); font-size: 0.82rem; }
+.data-columns { margin-top: 2rem; }
+.data-columns h4 { color: var(--white); margin-bottom: 1rem; }
+.col-group { margin-bottom: 1.2rem; }
+.col-group-title {
+  font-size: 0.72rem; font-family: 'DM Mono', monospace;
+  letter-spacing: 0.1em; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 0.5rem;
+}
+.col-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.col-tag {
+  font-size: 0.75rem; font-family: 'DM Mono', monospace;
+  padding: 3px 10px; border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); color: var(--muted);
+}
+
+/* ── WORKING MODEL ─────────────────────────────────────────────── */
+#model { background: var(--navy); }
+.model-container {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  margin-top: 4rem;
+}
+.model-header {
+  background: rgba(13,148,136,0.1);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.model-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+.model-title { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--muted); }
+.model-body { display: grid; grid-template-columns: 1fr 1fr; }
+.model-inputs { padding: 2rem; border-right: 1px solid var(--border); }
+.model-outputs { padding: 2rem; }
+.model-inputs h3, .model-outputs h3 {
+  font-size: 0.78rem; font-family: 'DM Mono', monospace;
+  color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.input-group { margin-bottom: 1.2rem; }
+.input-label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.5rem;
+}
+.input-label span { font-size: 0.85rem; color: var(--muted); }
+.input-label .val {
+  font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--white);
+}
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 4px;
+  border-radius: 2px; background: var(--border); outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--teal); cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 0; border-bottom: 1px solid var(--border);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-row span { font-size: 0.88rem; color: var(--muted); }
+.toggle {
+  position: relative; width: 40px; height: 22px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; border-radius: 22px;
+  background: rgba(255,255,255,0.1); cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: var(--teal); }
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: white; top: 3px; left: 3px;
+  transition: transform 0.2s;
+}
+.toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+.run-btn {
+  width: 100%; padding: 14px; border-radius: 10px;
+  background: var(--teal); color: white; border: none;
+  font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+  margin-top: 1.5rem; letter-spacing: 0.02em;
+}
+.run-btn:hover { background: var(--teal2); transform: translateY(-1px); }
+.run-btn:active { transform: translateY(0); }
+
+.output-section { margin-bottom: 1.5rem; }
+.output-label {
+  font-size: 0.72rem; font-family: 'DM Mono', monospace;
+  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.output-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 8px;
+  font-weight: 700; font-size: 0.95rem;
+}
+.drug-decisions { display: flex; flex-direction: column; gap: 0.75rem; }
+.drug-row {
+  display: flex; align-items: center;
+  padding: 0.85rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+.drug-name { font-size: 0.88rem; color: var(--muted); width: 130px; }
+.drug-action {
+  font-family: 'DM Mono', monospace; font-size: 0.82rem;
+  font-weight: 700; padding: 3px 10px; border-radius: 4px;
+  margin-right: 0.75rem;
+}
+.drug-reason { font-size: 0.78rem; color: var(--gray); }
+.reasoning-box {
+  background: rgba(13,148,136,0.06);
+  border: 1px solid rgba(13,148,136,0.2);
+  border-radius: 10px; padding: 1.2rem;
+  font-size: 0.85rem; color: var(--muted); line-height: 1.7;
+}
+
+/* ── TEAM ──────────────────────────────────────────────────────── */
+#team { background: var(--navy2); }
+.team-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; margin-top: 4rem;
+}
+.team-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  text-align: center;
+}
+.team-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; color: white; font-weight: 700;
+}
+.team-name { color: var(--white); font-weight: 600; margin-bottom: 0.25rem; }
+.team-role { color: var(--teal); font-size: 0.8rem; margin-bottom: 0.5rem; font-family: 'DM Mono', monospace; }
+.team-desc { color: var(--muted); font-size: 0.82rem; }
+
+/* ── FOOTER ────────────────────────────────────────────────────── */
+footer {
+  background: var(--navy); border-top: 1px solid var(--border);
+  padding: 3rem 2rem; text-align: center;
+}
+footer .tagline {
+  font-family: 'DM Serif Display', serif; font-style: italic;
+  font-size: 1.4rem; color: var(--white); margin-bottom: 0.75rem;
+}
+footer p { color: var(--muted); font-size: 0.85rem; }
+
+/* ── UTILITIES ─────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 0; }
+.mt-2 { margin-top: 2rem; }
+
+/* Animations */
+.fade-up {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  .sensors-grid { grid-template-columns: 1fr 1fr; }
+  .papers-grid  { grid-template-columns: 1fr; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .data-grid    { grid-template-columns: 1fr; }
+  .model-body   { grid-template-columns: 1fr; }
+  .team-grid    { grid-template-columns: 1fr 1fr; }
+  nav { padding: 0 1.5rem; }
+  .nav-links { gap: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">HFrEF-AI // PIXEL MINDS</div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#sensors">Sensors</a>
+    <a href="#papers">Research</a>
+    <a href="#logic">Logic</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#data">Data</a>
+    <a href="#model">Live Demo</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://github.com/HemaPriyaB/Experiential_Learning" target="_blank" class="nav-btn nav-btn-ghost" id="githubBtn" title="View source code">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>GitHub
+    </a>
+    <button onclick="openProjectBook()" class="nav-btn nav-btn-primary">📄 Project Book</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-tag">Heart Failure with Reduced Ejection Fraction</div>
+  <div class="hero" style="position:relative;z-index:1">
+    <h1>Sensor-Driven<br><em>Medication Titration</em><br>for Heart Failure</h1>
+    <p class="hero-sub">
+      An AI agent that watches HFrEF patients through 5 wearable sensors
+      and automatically decides when to adjust 4 life-saving medications —
+      24 hours a day, no clinic visit needed.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">Only 1%</div><div class="lbl">Reach Target Drug Doses</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="val">7</div><div class="lbl">Clinical Research Papers</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="val">6,319</div><div class="lbl">Real MIMIC-IV Patients</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="val">1.6M</div><div class="lbl">Decision-Ready Rows</div></div>
+    </div>
+    <div class="hero-cta">
+      <a href="#model" class="btn-primary">Try the Live Demo</a>
+      <a href="#logic" class="btn-outline">See the Logic</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container fade-up">
+    <span class="section-tag">01 — THE PROBLEM</span>
+    <h2 class="section-title">A lot goes wrong<br>between appointments</h2>
+    <p class="section-sub">Patients are prescribed 4 drugs and told to return in 2 weeks. In between, nobody is watching.</p>
+    <div class="problem-grid">
+      <div class="problem-visual">
+        <h3>The Numbers</h3>
+        <div class="problem-stat"><div class="num">2 wks</div><div class="desc">Average time between medication adjustments in current practice</div></div>
+        <div class="problem-stat"><div class="num">47%</div><div class="desc">Of HFrEF patients also have Chronic Kidney Disease — complicating drug decisions</div></div>
+        <div class="problem-stat"><div class="num">50%</div><div class="desc">5-year mortality rate — worse than many cancers</div></div>
+        <div class="problem-stat"><div class="num">1%</div><div class="desc">Of eligible patients receive ALL 4 drugs at target doses simultaneously</div></div>
+      </div>
+      <div class="problem-list">
+        <div class="problem-item">
+          <div class="problem-icon" style="background:rgba(220,38,38,0.15)">💧</div>
+          <div>
+            <h4>Fluid Builds Silently</h4>
+            <p>Lung fluid accumulates between visits. By the time a patient feels breathless, they may already need hospital admission.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:rgba(217,119,6,0.15)">📉</div>
+          <div>
+            <h4>Blood Pressure Drops Undetected</h4>
+            <p>Dangerous hypotension can develop from medication interactions. Without monitoring, it goes unnoticed.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:rgba(124,58,237,0.15)">🔬</div>
+          <div>
+            <h4>Kidney Function Declines</h4>
+            <p>RAAS inhibitors and diuretics stress the kidneys. Creatinine and eGFR need continuous tracking to prevent acute injury.</p>
+          </div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon" style="background:rgba(13,148,136,0.15)">🤖</div>
+          <div>
+            <h4>Our Solution</h4>
+            <p>5 wearable sensors. 7-step clinical logic. Automated drug decisions every 24 hours — based on 7 peer-reviewed guidelines.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SENSORS -->
+<section id="sensors">
+  <div class="container fade-up">
+    <span class="section-tag">02 — WEARABLE SENSORS</span>
+    <h2 class="section-title">5 sensors. Continuous.<br>Non-invasive.</h2>
+    <p class="section-sub">Each sensor feeds directly into the logic engine. No manual readings. No patient visits.</p>
+    <div class="sensors-grid">
+      <div class="sensor-card" style="--accent:#dc2626">
+        <style>.sensor-card:nth-child(1)::before{background:var(--red)}</style>
+        <span class="sensor-icon">🫀</span>
+        <div class="sensor-name">ECG Patch</div>
+        <div class="sensor-desc">Heart rhythm + arrhythmia detection. Identifies AF which changes the HR target from 70 to 110 bpm.</div>
+        <span class="sensor-drives" style="background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3)">→ Beta Blocker</span>
+      </div>
+      <div class="sensor-card">
+        <style>.sensor-card:nth-child(2)::before{background:var(--blue)}</style>
+        <span class="sensor-icon">🩺</span>
+        <div class="sensor-name">Blood Pressure</div>
+        <div class="sensor-desc">Continuous systolic BP. Must be ≥ 100 mmHg before any RAAS uptitration. Gate 1 of the 3-gate check.</div>
+        <span class="sensor-drives" style="background:rgba(37,99,235,0.12);color:var(--blue);border:1px solid rgba(37,99,235,0.3)">→ RAAS Gate</span>
+      </div>
+      <div class="sensor-card">
+        <style>.sensor-card:nth-child(3)::before{background:var(--purple)}</style>
+        <span class="sensor-icon">💓</span>
+        <div class="sensor-name">Heart Rate + HRV</div>
+        <div class="sensor-desc">BPM vs target drives beta blocker decisions. HRV sudden drop is an early warning before other sensors degrade.</div>
+        <span class="sensor-drives" style="background:rgba(124,58,237,0.12);color:var(--purple);border:1px solid rgba(124,58,237,0.3)">→ BB Titration</span>
+      </div>
+      <div class="sensor-card">
+        <style>.sensor-card:nth-child(4)::before{background:var(--red)}</style>
+        <span class="sensor-icon">🫁</span>
+        <div class="sensor-name">SpO₂ Sensor</div>
+        <div class="sensor-desc">Oxygen saturation. Below 90% overrides everything — immediate emergency escalation, all automated logic stops.</div>
+        <span class="sensor-drives" style="background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3)">→ Emergency Gate</span>
+      </div>
+      <div class="sensor-card">
+        <style>.sensor-card:nth-child(5)::before{background:var(--teal)}</style>
+        <span class="sensor-icon">🌊</span>
+        <div class="sensor-name">Impedance Patch</div>
+        <div class="sensor-desc">Thoracic fluid %. The most critical sensor. &gt;35% = WET, &lt;30% = DRY. This classification drives all 4 drug decisions.</div>
+        <span class="sensor-drives" style="background:rgba(13,148,136,0.12);color:var(--teal);border:1px solid rgba(13,148,136,0.3)">→ ALL Drugs</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAPERS -->
+<section id="papers">
+  <div class="container fade-up">
+    <span class="section-tag">03 — RESEARCH BASIS</span>
+    <h2 class="section-title">Every rule traced to<br>a clinical paper</h2>
+    <p class="section-sub">No rules are invented. Every IF-ELSE condition is directly cited to one of these 7 peer-reviewed publications.</p>
+    <div class="papers-grid">
+      <div class="paper-card"><div class="paper-num">01</div><div><div class="paper-title">AHA/ACC/HFSA 2022 HF Guidelines</div><div class="paper-source">Circulation, 2022</div><div class="paper-insight">Foundation rulebook: 4 GDMT drugs, titration frequency, monitoring parameters, dose targets from landmark trials.</div></div></div>
+      <div class="paper-card"><div class="paper-num">02</div><div><div class="paper-title">ACC 2024 Expert Consensus Pathway</div><div class="paper-source">JACC, 2024</div><div class="paper-insight">Wet/dry concept, trajectory monitoring, 3-gate RAAS safety check (SBP + K+ + eGFR), SBP≥100 gate origin.</div></div></div>
+      <div class="paper-card"><div class="paper-num">03</div><div><div class="paper-title">Wearable Sensors & Remote HF Monitoring</div><div class="paper-source">JACC Digital Health / PMC, 2023</div><div class="paper-insight">SpO2 thresholds (normal ≥95%, emergency <90%), lung fluid normal <30%, critical >40%, HRV as early warning.</div></div></div>
+      <div class="paper-card"><div class="paper-num">04</div><div><div class="paper-title">Diuretic Titration & Kidney Function</div><div class="paper-source">Michigan Medicine / ESC / CKJ, 2022–23</div><div class="paper-insight">Creatinine safety thresholds (rise <0.5 safe, >50% stop), K+ tiers, eGFR safety zones, wet+kidney fail protocol.</div></div></div>
+      <div class="paper-card"><div class="paper-num">05</div><div><div class="paper-title">Beta Blocker Titration in HFrEF</div><div class="paper-source">Circulation / Frontiers CV Medicine, 2023</div><div class="paper-insight">Dry-before-you-try rule, exact HR targets (70 normal / 110 AF), COPD drug restriction (Bisoprolol/Metoprolol only).</div></div></div>
+      <div class="paper-card"><div class="paper-num">06</div><div><div class="paper-title">RAAS Inhibitors: ACEi vs ARB vs ARNI</div><div class="paper-source">ACC 2024 / StatPearls</div><div class="paper-insight">ARNI preference hierarchy, mandatory 36hr washout ACEi→ARNI, potassium binder strategy, creatinine reduce diuretic first.</div></div></div>
+      <div class="paper-card"><div class="paper-num">07</div><div><div class="paper-title">SGLT2 Inhibitors + MRA in HFrEF</div><div class="paper-source">StatPearls 2025 / ESC 2023 / DAPA-HF / EMPEROR-Reduced</div><div class="paper-insight">Fixed 10mg dose, eGFR dip is normal and expected, SGLT2 lowers K+ to protect MRA continuation, T1DM contraindication.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGIC -->
+<section id="logic">
+  <div class="container fade-up">
+    <span class="section-tag">04 — DECISION LOGIC</span>
+    <h2 class="section-title">The 7-step<br>logic engine</h2>
+    <p class="section-sub">Applied in order, every cycle. Each step has mandatory gates — pass all gates or hold.</p>
+    <div class="logic-steps">
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--red)">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Emergency Gates</div>
+          <div class="step-rule">Check all safety limits first. Any single trigger stops all drug logic immediately and alerts the clinician.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">SpO2 &lt; 90% → EMERGENCY</span>
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">SBP &lt; 90 → HOLD ALL</span>
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">K+ &gt; 6.0 → STOP RAAS+MRA</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">Creat &gt; 3.5 → STOP RAAS+Diuretic</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">HR &lt; 40 → Reduce BB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--blue)">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Fluid Classification</div>
+          <div class="step-rule">The impedance patch reading determines WET, BORDERLINE, or DRY status. This single classification governs every downstream drug decision.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">Fluid &gt; 35% → WET</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">30–35% → BORDERLINE</span>
+            <span class="step-pill" style="color:var(--teal);border-color:rgba(13,148,136,0.3)">Fluid &lt; 30% → DRY</span>
+            <span class="step-pill" style="color:var(--purple);border-color:rgba(124,58,237,0.3)">AF → HR target 110bpm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--teal)">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Diuretic Decision</div>
+          <div class="step-rule">Furosemide / Torsemide dose adjusted based on fluid status, kidney function, and potassium level.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--teal);border-color:rgba(13,148,136,0.3)">WET + safe labs → INCREASE</span>
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">WET + Creat rose &gt;50% → ESCALATE IV</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">DRY + Creat rising → REDUCE</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">K+ &lt; 3.5 → REDUCE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--amber)">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">RAAS Inhibitor</div>
+          <div class="step-rule">All 3 gates must pass simultaneously. One failure means HOLD. ARNI (Sacubitril/Valsartan) preferred. ACEi → ARNI requires mandatory 36-hour washout.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">Gate 1: SBP ≥ 100</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">Gate 2: K+ &lt; 5.5</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">Gate 3: eGFR ≥ 30</span>
+            <span class="step-pill" style="color:var(--teal);border-color:rgba(13,148,136,0.3)">All pass → UPTITRATE ARNI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--purple)">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Beta Blocker Decision</div>
+          <div class="step-rule">Patient must be DRY first — never uptitrate when lungs are congested. COPD restricts drug choice to Bisoprolol or Metoprolol only.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">WET/BORDERLINE → SKIP</span>
+            <span class="step-pill" style="color:var(--teal);border-color:rgba(13,148,136,0.3)">DRY + HR &gt; target → UPTITRATE</span>
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">HR &lt; 50 → REDUCE</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">COPD → Biso/Metro only</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--teal)">6</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">SGLT2 + MRA</div>
+          <div class="step-rule">Managed as a pair. SGLT2 lowers potassium which protects the MRA from needing to be stopped when K+ rises.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--teal);border-color:rgba(13,148,136,0.3)">eGFR ≥ 20 → SGLT2 10mg</span>
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">T1DM → CONTRAINDICATED</span>
+            <span class="step-pill" style="color:var(--green);border-color:rgba(5,150,105,0.3)">K+ &lt; 5.0 + eGFR ≥ 30 → MRA</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">K+ 5.0–5.5 on SGLT2 → Monitor</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="logic-step">
+        <div class="step-num-col">
+          <div class="step-circle" style="background:var(--gray)">7</div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Trajectory Check</div>
+          <div class="step-rule">Review the last 3 readings together. All worsening = stop automated logic and escalate. HRV drop is an early warning flag.</div>
+          <div class="step-pills">
+            <span class="step-pill" style="color:var(--red);border-color:rgba(220,38,38,0.3)">3 readings worsening → ESCALATE</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">HRV drop → Early warning</span>
+            <span class="step-pill" style="color:var(--amber);border-color:rgba(217,119,6,0.3)">SBP dropped &gt;20pts → Flag</span>
+            <span class="step-pill" style="color:var(--green);border-color:rgba(5,150,105,0.3)">Fluid ↓ + stable → IMPROVING</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW SECTION -->
+<section id="workflow" style="background:#0a1628;padding:100px 0">
+  <div class="container">
+    <span class="section-tag">04.5 — SYSTEM WORKFLOW</span>
+    <h2 class="section-title">How data flows through<br>the system</h2>
+    <p class="section-sub">From raw sensor readings to a structured drug decision — every step automated and traceable.</p>
+    <div style="margin-top:4rem">
+
+      <!-- Flow diagram -->
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;margin-bottom:3rem">
+
+        <!-- INPUT -->
+        <div style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:16px;padding:2rem">
+          <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:#2563eb;letter-spacing:0.1em;margin-bottom:1rem">INPUT LAYER</div>
+          <div style="font-size:1rem;font-weight:700;color:white;margin-bottom:1.5rem">5 Wearable Sensors</div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem">
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border-radius:8px">
+              <span style="font-size:1.1rem">🫀</span><div><div style="font-size:0.85rem;font-weight:600;color:white">ECG Patch</div><div style="font-size:0.75rem;color:#64748b">HR, HRV, Arrhythmia</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border-radius:8px">
+              <span style="font-size:1.1rem">🩺</span><div><div style="font-size:0.85rem;font-weight:600;color:white">BP Sensor</div><div style="font-size:0.75rem;color:#64748b">Systolic mmHg</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border-radius:8px">
+              <span style="font-size:1.1rem">🫁</span><div><div style="font-size:0.85rem;font-weight:600;color:white">SpO₂ Sensor</div><div style="font-size:0.75rem;color:#64748b">Oxygen %</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border-radius:8px">
+              <span style="font-size:1.1rem">🌊</span><div><div style="font-size:0.85rem;font-weight:600;color:white">Impedance Patch</div><div style="font-size:0.75rem;color:#64748b">Lung fluid %</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:rgba(255,255,255,0.04);border-radius:8px">
+              <span style="font-size:1.1rem">🔬</span><div><div style="font-size:0.85rem;font-weight:600;color:white">Lab Results</div><div style="font-size:0.75rem;color:#64748b">Creat · K+ · eGFR</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ARROW 1 -->
+        <div style="display:flex;align-items:center;justify-content:center;padding:0 1.5rem">
+          <div style="text-align:center">
+            <div style="font-size:2rem;color:#0d9488">→</div>
+            <div style="font-size:0.7rem;color:#64748b;font-family:DM Mono,monospace;margin-top:4px">fetch &amp; parse</div>
+          </div>
+        </div>
+
+        <!-- LOGIC ENGINE -->
+        <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:16px;padding:2rem">
+          <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:#7c3aed;letter-spacing:0.1em;margin-bottom:1rem">LOGIC ENGINE</div>
+          <div style="font-size:1rem;font-weight:700;color:white;margin-bottom:1.5rem">7-Step IF-ELSE Rules</div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem">
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #dc2626;background:rgba(220,38,38,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#dc2626;min-width:20px">1</span><span style="font-size:0.82rem;color:#e2e8f0">Emergency Gates</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #2563eb;background:rgba(37,99,235,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#2563eb;min-width:20px">2</span><span style="font-size:0.82rem;color:#e2e8f0">Fluid Classification</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #0d9488;background:rgba(13,148,136,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#0d9488;min-width:20px">3</span><span style="font-size:0.82rem;color:#e2e8f0">Diuretic Decision</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #d97706;background:rgba(217,119,6,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#d97706;min-width:20px">4</span><span style="font-size:0.82rem;color:#e2e8f0">RAAS Inhibitor</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #7c3aed;background:rgba(124,58,237,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#7c3aed;min-width:20px">5</span><span style="font-size:0.82rem;color:#e2e8f0">Beta Blocker</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #0d9488;background:rgba(13,148,136,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#0d9488;min-width:20px">6</span><span style="font-size:0.82rem;color:#e2e8f0">SGLT2 + MRA</span></div>
+            <div style="display:flex;gap:0.75rem;align-items:center;padding:0.5rem 0.75rem;border-left:3px solid #6b7280;background:rgba(107,114,128,0.05);border-radius:0 6px 6px 0"><span style="font-family:DM Mono,monospace;font-size:0.72rem;color:#6b7280;min-width:20px">7</span><span style="font-size:0.82rem;color:#e2e8f0">Trajectory Check</span></div>
+          </div>
+        </div>
+
+        <!-- ARROW 2 -->
+        <div style="display:flex;align-items:center;justify-content:center;padding:0 1.5rem">
+          <div style="text-align:center">
+            <div style="font-size:2rem;color:#0d9488">→</div>
+            <div style="font-size:0.7rem;color:#64748b;font-family:DM Mono,monospace;margin-top:4px">decisions</div>
+          </div>
+        </div>
+
+        <!-- OUTPUT -->
+        <div style="background:rgba(13,148,136,0.08);border:1px solid rgba(13,148,136,0.25);border-radius:16px;padding:2rem">
+          <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:#0d9488;letter-spacing:0.1em;margin-bottom:1rem">OUTPUT LAYER</div>
+          <div style="font-size:1rem;font-weight:700;color:white;margin-bottom:1.5rem">Drug Decisions + Alert</div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem">
+            <div style="padding:0.75rem 1rem;background:rgba(13,148,136,0.1);border:1px solid rgba(13,148,136,0.3);border-radius:8px">
+              <div style="font-size:0.78rem;color:#0d9488;font-family:DM Mono,monospace;margin-bottom:4px">Diuretic</div>
+              <div style="font-size:0.85rem;color:white;font-weight:600">INCREASE — 40mg → 80mg</div>
+            </div>
+            <div style="padding:0.75rem 1rem;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.25);border-radius:8px">
+              <div style="font-size:0.78rem;color:#dc2626;font-family:DM Mono,monospace;margin-bottom:4px">Beta Blocker</div>
+              <div style="font-size:0.85rem;color:white;font-weight:600">SKIP — patient WET</div>
+            </div>
+            <div style="padding:0.75rem 1rem;background:rgba(13,148,136,0.1);border:1px solid rgba(13,148,136,0.3);border-radius:8px">
+              <div style="font-size:0.78rem;color:#0d9488;font-family:DM Mono,monospace;margin-bottom:4px">RAAS</div>
+              <div style="font-size:0.85rem;color:white;font-weight:600">UPTITRATE — all gates pass</div>
+            </div>
+            <div style="padding:0.75rem 1rem;background:rgba(13,148,136,0.1);border:1px solid rgba(13,148,136,0.3);border-radius:8px">
+              <div style="font-size:0.78rem;color:#0d9488;font-family:DM Mono,monospace;margin-bottom:4px">SGLT2</div>
+              <div style="font-size:0.85rem;color:white;font-weight:600">MAINTAIN — 10mg</div>
+            </div>
+            <div style="padding:0.6rem 1rem;background:rgba(5,150,105,0.1);border-radius:8px;display:flex;align-items:center;gap:0.5rem">
+              <span>↻</span><span style="font-size:0.8rem;color:#94a3b8">Repeats every 24 hours</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech stack row -->
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem 2rem">
+        <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:#64748b;letter-spacing:0.1em;margin-bottom:1rem">TECH STACK</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);color:#93c5fd;font-size:0.82rem;font-family:DM Mono,monospace">LangChain</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);color:#93c5fd;font-size:0.82rem;font-family:DM Mono,monospace">LangGraph StateGraph</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.25);color:#c4b5fd;font-size:0.82rem;font-family:DM Mono,monospace">Claude Sonnet / GPT-4o</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(13,148,136,0.12);border:1px solid rgba(13,148,136,0.25);color:#5eead4;font-size:0.82rem;font-family:DM Mono,monospace">Python + Pydantic</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.25);color:#fcd34d;font-size:0.82rem;font-family:DM Mono,monospace">MIMIC-IV v3.1</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(13,148,136,0.12);border:1px solid rgba(13,148,136,0.25);color:#5eead4;font-size:0.82rem;font-family:DM Mono,monospace">DuckDB</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.25);color:#fca5a5;font-size:0.82rem;font-family:DM Mono,monospace">FastAPI + WebSocket</span>
+          <span style="padding:6px 14px;border-radius:6px;background:rgba(107,114,128,0.12);border:1px solid rgba(107,114,128,0.25);color:#d1d5db;font-size:0.82rem;font-family:DM Mono,monospace">LangSmith</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA -->
+<section id="data">
+  <div class="container fade-up">
+    <span class="section-tag">05 — DATASET</span>
+    <h2 class="section-title">MIMIC-IV: Real patient<br>data to test the logic</h2>
+    <p class="section-sub">We filtered 500,000 hospital admissions down to 6,319 HFrEF patients with complete sensor, drug, and lab records.</p>
+    <div class="data-grid">
+      <div>
+        <h4 style="color:var(--white);margin-bottom:1.5rem;font-size:1rem">5-Step Filtering Pipeline</h4>
+        <div class="data-funnel">
+          <div class="funnel-step" style="background:rgba(107,114,128,0.1);border-left-color:var(--gray)"><div class="fn">Full MIMIC-IV</div><div class="fv" style="color:var(--gray)">~500,000</div></div>
+          <div class="funnel-step" style="background:rgba(217,119,6,0.1);border-left-color:var(--amber)"><div class="fn">Heart Failure (ICD codes)</div><div class="fv" style="color:var(--amber)">~40,000</div></div>
+          <div class="funnel-step" style="background:rgba(37,99,235,0.1);border-left-color:var(--blue)"><div class="fn">HFrEF Specifically (I50.22)</div><div class="fv" style="color:var(--blue)">33,131</div></div>
+          <div class="funnel-step" style="background:rgba(13,148,136,0.1);border-left-color:var(--teal)"><div class="fn">+ Has GDMT Drug Records</div><div class="fv" style="color:var(--teal)">14,144</div></div>
+          <div class="funnel-step" style="background:rgba(5,150,105,0.15);border-left-color:var(--green)"><div class="fn">+ Has Sensor Signal Data</div><div class="fv" style="color:var(--green)">6,319 ✓</div></div>
+        </div>
+        <div class="data-stats mt-2">
+          <div class="data-stat-card"><div class="v" style="color:var(--teal)">1.6M</div><div class="l">Decision-ready rows</div></div>
+          <div class="data-stat-card"><div class="v" style="color:var(--blue)">43</div><div class="l">Columns per row</div></div>
+          <div class="data-stat-card"><div class="v" style="color:var(--amber)">267K</div><div class="l">Drug records</div></div>
+          <div class="data-stat-card"><div class="v" style="color:var(--purple)">2.7M</div><div class="l">Lab results</div></div>
+        </div>
+      </div>
+      <div>
+        <h4 style="color:var(--white);margin-bottom:1.5rem;font-size:1rem">Final Dataset Schema (43 columns)</h4>
+        <div class="data-columns">
+          <div class="col-group">
+            <div class="col-group-title">Sensor Signals</div>
+            <div class="col-tags">
+              <span class="col-tag">heart_rate</span><span class="col-tag">sbp</span>
+              <span class="col-tag">spo2</span><span class="col-tag">resp_rate</span>
+              <span class="col-tag">weight_kg</span>
+            </div>
+          </div>
+          <div class="col-group">
+            <div class="col-group-title">Lab Results</div>
+            <div class="col-tags">
+              <span class="col-tag">creatinine</span><span class="col-tag">potassium</span>
+              <span class="col-tag">egfr</span><span class="col-tag">sodium</span>
+              <span class="col-tag">bun</span><span class="col-tag">anion_gap</span>
+              <span class="col-tag">ph</span><span class="col-tag">hematocrit</span>
+              <span class="col-tag">platelets</span><span class="col-tag">wbc</span>
+            </div>
+          </div>
+          <div class="col-group">
+            <div class="col-group-title">Drug Records</div>
+            <div class="col-tags">
+              <span class="col-tag">dose_diuretic</span><span class="col-tag">dose_raas</span>
+              <span class="col-tag">dose_betablocker</span><span class="col-tag">dose_mra</span>
+              <span class="col-tag">dose_sglt2</span><span class="col-tag">drug_diuretic</span>
+              <span class="col-tag">drug_raas</span><span class="col-tag">drug_betablocker</span>
+            </div>
+          </div>
+          <div class="col-group">
+            <div class="col-group-title">Comorbidity Flags</div>
+            <div class="col-tags">
+              <span class="col-tag">has_afib</span><span class="col-tag">has_ckd</span>
+              <span class="col-tag">has_t1dm</span><span class="col-tag">has_t2dm</span>
+              <span class="col-tag">has_copd</span><span class="col-tag">has_cardiomyopathy</span>
+            </div>
+          </div>
+          <div class="col-group">
+            <div class="col-group-title">Logic Engine Flags</div>
+            <div class="col-tags">
+              <span class="col-tag">flag_emergency_spo2</span>
+              <span class="col-tag">flag_low_sbp</span>
+              <span class="col-tag">flag_high_potassium</span>
+              <span class="col-tag">flag_high_creatinine</span>
+              <span class="col-tag">flag_low_hr</span>
+              <span class="col-tag">flag_high_hr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKING MODEL -->
+<section id="model">
+  <div class="container fade-up">
+    <span class="section-tag">06 — LIVE DEMO</span>
+    <h2 class="section-title">Try the logic engine<br>yourself</h2>
+    <p class="section-sub">Adjust the patient parameters below and see exactly what the AI agent decides — and why.</p>
+    <div class="model-container">
+      <div class="model-header">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+        <span class="model-title">HFrEF AI Agent — Patient Simulation</span>
+      </div>
+      <div class="model-body">
+        <div class="model-inputs">
+          <h3>Patient Parameters</h3>
+
+          <div class="input-group">
+            <div class="input-label"><span>SpO₂ (%)</span><span class="val" id="spo2Val">96</span></div>
+            <input type="range" id="spo2" min="80" max="100" value="96">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>Systolic BP (mmHg)</span><span class="val" id="sbpVal">118</span></div>
+            <input type="range" id="sbp" min="70" max="160" value="118">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>Heart Rate (bpm)</span><span class="val" id="hrVal">82</span></div>
+            <input type="range" id="hr" min="35" max="130" value="82">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>Lung Fluid % (Impedance)</span><span class="val" id="fluidVal">32</span></div>
+            <input type="range" id="fluid" min="20" max="50" value="32">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>Creatinine (mg/dL)</span><span class="val" id="creatVal">1.2</span></div>
+            <input type="range" id="creat" min="5" max="50" value="12">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>Potassium K+ (mEq/L)</span><span class="val" id="kVal">4.4</span></div>
+            <input type="range" id="k" min="25" max="70" value="44">
+          </div>
+          <div class="input-group">
+            <div class="input-label"><span>eGFR (mL/min)</span><span class="val" id="egfrVal">52</span></div>
+            <input type="range" id="egfr" min="10" max="90" value="52">
+          </div>
+
+          <div style="margin-top:1.5rem">
+            <div class="toggle-row">
+              <span>Atrial Fibrillation (AF)</span>
+              <label class="toggle"><input type="checkbox" id="afib"><div class="toggle-slider"></div></label>
+            </div>
+            <div class="toggle-row">
+              <span>Type 1 Diabetes (T1DM)</span>
+              <label class="toggle"><input type="checkbox" id="t1dm"><div class="toggle-slider"></div></label>
+            </div>
+            <div class="toggle-row">
+              <span>COPD / Asthma</span>
+              <label class="toggle"><input type="checkbox" id="copd"><div class="toggle-slider"></div></label>
+            </div>
+          </div>
+
+          <button class="run-btn" onclick="runLogic()">▶  Run Logic Engine</button>
+        </div>
+
+        <div class="model-outputs">
+          <h3>Agent Decision</h3>
+          <div class="output-section">
+            <div class="output-label">Step 1 — Emergency Status</div>
+            <div id="emergency" class="output-badge" style="background:rgba(5,150,105,0.15);color:#10b981;border:1px solid rgba(5,150,105,0.3)">✓ SAFE — No emergency triggers</div>
+          </div>
+          <div class="output-section">
+            <div class="output-label">Step 2 — Fluid Status</div>
+            <div id="fluidStatus" class="output-badge" style="background:rgba(217,119,6,0.15);color:var(--amber);border:1px solid rgba(217,119,6,0.3)">BORDERLINE — Monitor closely</div>
+          </div>
+          <div class="output-section">
+            <div class="output-label">Steps 3–6 — Drug Decisions</div>
+            <div class="drug-decisions" id="drugDecisions">
+              <div class="drug-row"><span class="drug-name">Diuretic</span><span class="drug-action" style="background:rgba(217,119,6,0.15);color:var(--amber)">HOLD</span><span class="drug-reason">Borderline fluid, monitor</span></div>
+              <div class="drug-row"><span class="drug-name">RAAS Inhibitor</span><span class="drug-action" style="background:rgba(13,148,136,0.15);color:var(--teal)">UPTITRATE</span><span class="drug-reason">All 3 gates pass</span></div>
+              <div class="drug-row"><span class="drug-name">Beta Blocker</span><span class="drug-action" style="background:rgba(220,38,38,0.15);color:var(--red)">SKIP</span><span class="drug-reason">Not dry yet</span></div>
+              <div class="drug-row"><span class="drug-name">SGLT2</span><span class="drug-action" style="background:rgba(13,148,136,0.15);color:var(--teal)">MAINTAIN 10mg</span><span class="drug-reason">eGFR ≥ 20, safe</span></div>
+              <div class="drug-row"><span class="drug-name">MRA</span><span class="drug-action" style="background:rgba(13,148,136,0.15);color:var(--teal)">MAINTAIN</span><span class="drug-reason">K+ and eGFR safe</span></div>
+            </div>
+          </div>
+          <div class="output-section">
+            <div class="output-label">Step 7 — Trajectory</div>
+            <div id="trajectory" class="output-badge" style="background:rgba(13,148,136,0.15);color:var(--teal);border:1px solid rgba(13,148,136,0.3)">STABLE — Continue current plan</div>
+          </div>
+          <div>
+            <div class="output-label">Clinical Reasoning</div>
+            <div class="reasoning-box" id="reasoning">
+              Fluid at 32% (borderline range 30–35%). Not wet enough to increase diuretic, not dry enough to start beta blocker. RAAS gates all pass — SBP 118 ≥ 100, K+ 4.4 &lt; 5.5, eGFR 52 ≥ 30 — so RAAS can be uptitrated. SGLT2 and MRA are safe to maintain. Next priority: get fluid below 30% to unlock beta blocker.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="container fade-up">
+    <span class="section-tag">07 — PIXEL MINDS</span>
+    <h2 class="section-title">The team</h2>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar">J</div><div class="team-name">Jayachandra Galda</div><div class="team-role">AI/ML Engineering</div><div class="team-desc">Agent architecture, logic framework, dataset pipeline, presentations</div></div>
+      <div class="team-card"><div class="team-avatar">H</div><div class="team-name">Hema Priya Balaji</div><div class="team-role">Decision Logic</div><div class="team-desc">7-step IF-ELSE decision tree, drug rule formalisation</div></div>
+      <div class="team-card"><div class="team-avatar">S</div><div class="team-name">Srinivasa Rao Tummalapalli</div><div class="team-role">Data Engineering</div><div class="team-desc">MIMIC-IV access, SQL filtering pipeline, dataset construction</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="tagline">"Nobody should wait two weeks to find out something went wrong."</div>
+  <p>PIXEL MINDS · CDA Project · University at Buffalo · MS Artificial Intelligence · Spring 2026</p>
+</footer>
+
+<script>
+// ── Slider live values ────────────────────────────────────────────
+const sliders = [
+  {id:'spo2',  disp:'spo2Val',  scale: v => v,      fmt: v => v+'%'},
+  {id:'sbp',   disp:'sbpVal',   scale: v => v,      fmt: v => v},
+  {id:'hr',    disp:'hrVal',    scale: v => v,      fmt: v => v},
+  {id:'fluid', disp:'fluidVal', scale: v => v,      fmt: v => v+'%'},
+  {id:'creat', disp:'creatVal', scale: v => v/10,   fmt: v => v.toFixed(1)},
+  {id:'k',     disp:'kVal',     scale: v => v/10,   fmt: v => v.toFixed(1)},
+  {id:'egfr',  disp:'egfrVal',  scale: v => v,      fmt: v => v},
+];
+sliders.forEach(s => {
+  const el = document.getElementById(s.id);
+  const display = () => {
+    document.getElementById(s.disp).textContent = s.fmt(s.scale(+el.value));
+  };
+  el.addEventListener('input', display);
+  display();
+});
+
+// ── Logic Engine ──────────────────────────────────────────────────
+function getVals() {
+  return {
+    spo2:  +document.getElementById('spo2').value,
+    sbp:   +document.getElementById('sbp').value,
+    hr:    +document.getElementById('hr').value,
+    fluid: +document.getElementById('fluid').value,
+    creat: +document.getElementById('creat').value / 10,
+    k:     +document.getElementById('k').value / 10,
+    egfr:  +document.getElementById('egfr').value,
+    afib:  document.getElementById('afib').checked,
+    t1dm:  document.getElementById('t1dm').checked,
+    copd:  document.getElementById('copd').checked,
+  };
+}
+
+function badge(id, bg, col, border, text) {
+  const el = document.getElementById(id);
+  el.style.background = bg;
+  el.style.color = col;
+  el.style.border = `1px solid ${border}`;
+  el.textContent = text;
+}
+
+function actionStyle(action) {
+  if (action === 'INCREASE' || action === 'UPTITRATE' || action === 'MAINTAIN' || action === 'START')
+    return 'background:rgba(13,148,136,0.15);color:#0d9488';
+  if (action === 'SKIP' || action === 'STOP' || action === 'EMERGENCY' || action === 'ESCALATE')
+    return 'background:rgba(220,38,38,0.15);color:#dc2626';
+  if (action === 'REDUCE' || action === 'CONTRAINDICATED')
+    return 'background:rgba(217,119,6,0.15);color:#d97706';
+  return 'background:rgba(107,114,128,0.15);color:#9ca3af';
+}
+
+function runLogic() {
+  const v = getVals();
+  const reasons = [];
+
+  // STEP 1 — Emergency
+  let emergency = false;
+  let emergencyReasons = [];
+  if (v.spo2 < 90)  { emergency = true; emergencyReasons.push(`SpO2=${v.spo2}% < 90%`); }
+  if (v.sbp < 90)   { emergency = true; emergencyReasons.push(`SBP=${v.sbp} < 90`); }
+  if (v.k > 6.0)    { emergency = true; emergencyReasons.push(`K+=${v.k.toFixed(1)} > 6.0`); }
+  if (v.creat > 3.5){ emergency = true; emergencyReasons.push(`Creat=${v.creat.toFixed(1)} > 3.5`); }
+  if (v.hr < 40)    { emergency = true; emergencyReasons.push(`HR=${v.hr} < 40`); }
+
+  if (emergency) {
+    badge('emergency','rgba(220,38,38,0.2)','#ef4444','rgba(220,38,38,0.4)',
+      `⚠ EMERGENCY — ${emergencyReasons.join(' | ')}`);
+    badge('fluidStatus','rgba(107,114,128,0.1)','#6b7280','rgba(107,114,128,0.3)','— Emergency override');
+    badge('trajectory','rgba(220,38,38,0.15)','#ef4444','rgba(220,38,38,0.3)','ESCALATE — Alert clinician');
+    document.getElementById('drugDecisions').innerHTML =
+      ['Diuretic','RAAS Inhibitor','Beta Blocker','SGLT2','MRA'].map(d =>
+        `<div class="drug-row"><span class="drug-name">${d}</span>
+         <span class="drug-action" style="background:rgba(220,38,38,0.15);color:#dc2626">HOLD</span>
+         <span class="drug-reason">Emergency — all drugs held</span></div>`
+      ).join('');
+    document.getElementById('reasoning').textContent =
+      `EMERGENCY TRIGGERED: ${emergencyReasons.join(', ')}. All drug automation stopped. Clinician alert sent. Review sensors and stabilise patient before resuming logic.`;
+    return;
+  }
+
+  badge('emergency','rgba(5,150,105,0.15)','#10b981','rgba(5,150,105,0.3)',
+    '✓ SAFE — All emergency thresholds clear');
+
+  // STEP 2 — Fluid
+  let fluid;
+  if (v.fluid > 35)      { fluid = 'WET'; }
+  else if (v.fluid < 30) { fluid = 'DRY'; }
+  else                   { fluid = 'BORDERLINE'; }
+
+  const fluidStyles = {
+    WET: ['rgba(220,38,38,0.15)', '#ef4444', 'rgba(220,38,38,0.3)', `WET (${v.fluid}%) — Prioritise diuresis`],
+    BORDERLINE: ['rgba(217,119,6,0.15)', '#f59e0b', 'rgba(217,119,6,0.3)', `BORDERLINE (${v.fluid}%) — Monitor closely`],
+    DRY: ['rgba(13,148,136,0.15)', '#0d9488', 'rgba(13,148,136,0.3)', `DRY (${v.fluid}%) — Beta blocker now allowed`],
+  };
+  badge('fluidStatus', ...fluidStyles[fluid]);
+
+  // STEP 3 — Diuretic
+  let diuretic, diureticReason;
+  if (fluid === 'WET') {
+    if (v.creat > 2.0) { diuretic = 'ESCALATE'; diureticReason = 'WET + kidney struggling → IV route'; }
+    else if (v.k < 3.5){ diuretic = 'REDUCE'; diureticReason = 'Low K+ — losing too much potassium'; }
+    else               { diuretic = 'INCREASE'; diureticReason = 'WET + labs safe → increase dose'; }
+  } else if (fluid === 'DRY' && v.creat > 1.5) {
+    diuretic = 'REDUCE'; diureticReason = 'DRY + creatinine rising → over-diuresis';
+  } else if (v.k < 3.5) {
+    diuretic = 'REDUCE'; diureticReason = 'K+ < 3.5 → reduce dose';
+  } else {
+    diuretic = 'HOLD'; diureticReason = fluid === 'WET' ? 'Monitoring' : 'Not wet enough to increase';
+  }
+
+  // STEP 4 — RAAS
+  let raas, raasReason;
+  const gSBP = v.sbp >= 100, gK = v.k < 5.5, gEGFR = v.egfr >= 30;
+  if (gSBP && gK && gEGFR) {
+    raas = 'UPTITRATE'; raasReason = 'All 3 gates pass — ARNI preferred';
+  } else {
+    raas = 'HOLD';
+    const failed = [];
+    if (!gSBP)  failed.push(`SBP ${v.sbp} < 100`);
+    if (!gK)    failed.push(`K+ ${v.k.toFixed(1)} ≥ 5.5`);
+    if (!gEGFR) failed.push(`eGFR ${v.egfr} < 30`);
+    raasReason = `Gate failed: ${failed.join(', ')}`;
+  }
+
+  // STEP 5 — Beta Blocker
+  let bb, bbReason;
+  if (fluid === 'WET' || fluid === 'BORDERLINE') {
+    bb = 'SKIP'; bbReason = 'Not dry yet — dry before you try';
+  } else {
+    const hrTarget = v.afib ? 110 : 70;
+    if (v.hr > hrTarget) {
+      bb = v.copd ? 'UPTITRATE' : 'UPTITRATE';
+      bbReason = v.copd ? `HR ${v.hr} > ${hrTarget} — Bisoprolol/Metro only (COPD)` : `HR ${v.hr} > ${hrTarget} target`;
+    } else if (v.hr < 50) {
+      bb = 'REDUCE'; bbReason = `HR ${v.hr} < 50 — too slow`;
+    } else {
+      bb = 'HOLD'; bbReason = `HR ${v.hr} at or near target (${hrTarget})`;
+    }
+  }
+
+  // STEP 6 — SGLT2 + MRA
+  let sglt2, sglt2Reason, mra, mraReason;
+  if (v.t1dm) {
+    sglt2 = 'CONTRAINDICATED'; sglt2Reason = 'T1DM — never start SGLT2';
+  } else if (v.egfr < 20) {
+    sglt2 = 'HOLD'; sglt2Reason = `eGFR ${v.egfr} < 20 minimum`;
+  } else {
+    sglt2 = 'MAINTAIN 10mg'; sglt2Reason = `eGFR ${v.egfr} ≥ 20 — safe`;
+  }
+  if (v.k < 5.0 && v.egfr >= 30 && v.creat <= 2.5) {
+    mra = 'MAINTAIN'; mraReason = `K+ ${v.k.toFixed(1)} < 5.0, eGFR safe`;
+  } else if (v.k > 5.5) {
+    mra = 'REDUCE'; mraReason = `K+ ${v.k.toFixed(1)} > 5.5 — reduce MRA`;
+  } else {
+    mra = 'HOLD'; mraReason = 'Safety threshold not met';
+  }
+
+  // Render drug rows
+  const drugs = [
+    ['Diuretic',     diuretic, diureticReason],
+    ['RAAS Inhibitor', raas, raasReason],
+    ['Beta Blocker', bb, bbReason],
+    ['SGLT2',        sglt2, sglt2Reason],
+    ['MRA',          mra, mraReason],
+  ];
+  document.getElementById('drugDecisions').innerHTML = drugs.map(([name, action, reason]) =>
+    `<div class="drug-row">
+      <span class="drug-name">${name}</span>
+      <span class="drug-action" style="${actionStyle(action)}">${action}</span>
+      <span class="drug-reason">${reason}</span>
+    </div>`
+  ).join('');
+
+  // Trajectory
+  if (v.hr > 100 && v.sbp < 100) {
+    badge('trajectory','rgba(220,38,38,0.15)','#ef4444','rgba(220,38,38,0.3)','WORSENING — Escalate if trend continues');
+  } else if (v.hr < 80 && v.sbp > 110 && v.spo2 > 95) {
+    badge('trajectory','rgba(13,148,136,0.15)','#0d9488','rgba(13,148,136,0.3)','IMPROVING — Continue current plan');
+  } else {
+    badge('trajectory','rgba(107,114,128,0.15)','#9ca3af','rgba(107,114,128,0.3)','STABLE — No trend concern');
+  }
+
+  // Reasoning
+  const parts = [];
+  parts.push(`Fluid at ${v.fluid}% → ${fluid}.`);
+  if (fluid==='WET') parts.push('Lungs congested — diuresis is priority.');
+  if (fluid==='DRY') parts.push('Lungs clear — beta blocker titration allowed.');
+  parts.push(`RAAS: ${raas === 'UPTITRATE' ? 'All 3 gates pass (SBP '+v.sbp+' ≥ 100, K+ '+v.k.toFixed(1)+' < 5.5, eGFR '+v.egfr+' ≥ 30) → uptitrate.' : 'Gate failed — '+raasReason+'.'}`);
+  parts.push(`Beta Blocker: ${bbReason}.`);
+  if (v.t1dm) parts.push('T1DM detected — SGLT2 is permanently contraindicated.');
+  if (v.copd) parts.push('COPD detected — beta blocker restricted to Bisoprolol or Metoprolol only.');
+  document.getElementById('reasoning').textContent = parts.join(' ');
+}
+
+// Auto-run on load
+runLogic();
+
+// ── Scroll animations ─────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+
+<!-- PROJECT BOOK MODAL -->
+<div id="projectBookModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:2rem">
+  <div style="background:#0f1f3d;border:1px solid rgba(255,255,255,0.1);border-radius:20px;width:90%;max-width:960px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.8rem;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div>
+        <div style="font-family:DM Mono,monospace;font-size:0.7rem;color:#0d9488;letter-spacing:0.1em;margin-bottom:4px">PROJECT DOCUMENTATION</div>
+        <div style="color:white;font-weight:700;font-size:1rem">HFrEF AI Agent — Project Book</div>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:center">
+        <a href="project_book.pdf" download class="nav-btn nav-btn-ghost" style="font-size:0.8rem">⬇ Download PDF</a>
+        <button onclick="closeProjectBook()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.1rem">✕</button>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden;min-height:60vh">
+      <iframe id="projectBookFrame" src="project_book.pdf" style="width:100%;height:100%;min-height:70vh;border:none" title="Project Book">
+        <div style="padding:3rem;text-align:center;color:#94a3b8">
+          <div style="font-size:3rem;margin-bottom:1rem">📄</div>
+          <div style="font-size:1.1rem;color:white;margin-bottom:0.5rem">Project Book PDF</div>
+          <p style="margin-bottom:1.5rem">To display the project book here, replace <code style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:4px">project_book.pdf</code> in the HTML with your PDF link.</p>
+          <a href="project_book.pdf" class="btn-primary" style="display:inline-block">Open PDF</a>
+        </div>
+      </iframe>
+    </div>
+    <div style="padding:1rem 1.8rem;border-top:1px solid rgba(255,255,255,0.08);text-align:center">
+      <span style="font-size:0.78rem;color:#64748b;font-family:DM Mono,monospace">PIXEL MINDS · CDA Project · University at Buffalo · Spring 2026</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function openProjectBook() {
+  const modal = document.getElementById('projectBookModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeProjectBook() {
+  document.getElementById('projectBookModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.getElementById('projectBookModal').addEventListener('click', function(e) {
+  if (e.target === this) closeProjectBook();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProjectBook();
+});
+// GitHub URL setter — paste your URL here
+function setGithubUrl(url) {
+  document.getElementById('githubBtn').href = url;
+}
+// Call this with your real URL: setGithubUrl('https://github.com/your-repo')
+</script>
+
+</body>
+</html>
